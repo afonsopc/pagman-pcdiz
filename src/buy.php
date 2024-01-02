@@ -88,7 +88,7 @@ if (!isset($_GET['id'])) {
             $_SESSION['user']['money'] = $user_money_left;
 
             $stmt = $db->prepare('INSERT INTO orders (user_id, product_id, product_name, product_cost, product_description, product_image) VALUES (?, ?, ?, ?, ?, ?)');
-            $stmt->bind_param('iiiiii', $_SESSION['user']['id'], $id, $product['name'], $product['cost'], $product['description'], $product['image']);
+            $stmt->bind_param('iisiss', $_SESSION['user']['id'], $id, $product['name'], $product['cost'], $product['description'], $product['image']);
             $stmt->execute();
 
             $order_id = $db->insert_id;

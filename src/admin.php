@@ -45,7 +45,7 @@ if (isset($_POST['name'])) {
     $image = $_POST['image'];
 
     $stmt = $db->prepare('INSERT INTO products (name, cost, description, image) VALUES (?, ?, ?, ?)');
-    $stmt->bind_param('ssss', $name, $cost, $description, $image);
+    $stmt->bind_param('siss', $name, $cost, $description, $image);
     $stmt->execute();
 
     header('Location: /');
