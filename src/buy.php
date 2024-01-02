@@ -54,7 +54,7 @@ if (!isset($_GET['id'])) {
             $db_password = $_ENV['DB_PASSWORD'];
 
             $db = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
-            $stmt = $db->prepare('SELECT cost FROM products WHERE id = ?');
+            $stmt = $db->prepare('SELECT * FROM products WHERE id = ?');
             $stmt->bind_param('i', $id);
             $stmt->execute();
             $product = $stmt->get_result()->fetch_assoc();
@@ -87,8 +87,8 @@ if (!isset($_GET['id'])) {
 
             $_SESSION['user']['money'] = $user_money_left;
 
-            $stmt = $db->prepare('INSERT INTO orders (user_id, product_id, cost) VALUES (?, ?, ?)');
-            $stmt->bind_param('iii', $_SESSION['user']['id'], $id, $product['cost']);
+            $stmt = $db->prepare('INSERT INTO orders (user_id, product_id, product_name, product_cost, product_description, product_image) VALUES (?, ?, ?, ?, ?, ?)');
+            $stmt->bind_param('iiiiii', $_SESSION['user']['id'], $id, $product['name'], $product['cost'], $product['description'], $product['image']);
             $stmt->execute();
 
             $order_id = $db->insert_id;

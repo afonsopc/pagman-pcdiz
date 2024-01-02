@@ -18,8 +18,10 @@ CREATE TABLE `orders` (
     `id` INT PRIMARY KEY AUTO_INCREMENT,
     `user_id` INT NOT NULL,
     `product_id` INT NOT NULL,
-    `cost` INT NOT NULL,
+    `product_name` VARCHAR(1000) NOT NULL,
+    `product_cost` INT NOT NULL,
+    `product_description` VARCHAR(1000) NOT NULL,
+    `product_image` VARCHAR(2000) NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
 );

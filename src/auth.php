@@ -47,12 +47,13 @@ if (isset($_POST['login'])) {
     } else {
         $stmt = $db->prepare('INSERT INTO users (name, password, role) VALUES (?, ?, ?)');
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+        $role = 'user';
         if ($name === $default_admin_username) {
             $role = 'admin';
-        } else {
-            $role = 'user';
         }
-        $stmt->bind_param('sss', $name, $password_hash, $default_role);
+
+        $stmt->bind_param('sss', $name, $password_hash, $role);
         $stmt->execute();
         $loginError = 'Conta criada com sucesso.';
     }

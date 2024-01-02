@@ -9,7 +9,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./tailwind.js"></script>
-    <title>Deus, Pátria, Rei. Fidelidade!</title>
+    <title>PCDIZ</title>
 </head>
 
 <body>
@@ -89,7 +89,7 @@ session_start();
             }
             ?>
         </section>
-        <section class="flex flex-col gap-2 text-center bg-black text-white items-center justify-center align-middle w-screen h-80">
+        <section class="flex flex-col px-5 gap-2 text-center bg-black text-white items-center justify-center align-middle w-screen h-80">
             <p>Website desenvolvido por</p>
             <a href="https://omelhorsite.pt" target="_blank" rel="noopener noreferrer" class="hover:bg-gray-800 px-5 border-gray-700 rounded-lg p-2 border-2">Afonso Maria Pacheco de Castro Pereira Coutinho</a>
         </section>

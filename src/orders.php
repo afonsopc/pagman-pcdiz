@@ -65,18 +65,13 @@ session_start();
                         $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
                         foreach ($orders as $order) {
-                            $stmt = $db->prepare('SELECT * FROM products WHERE id = ?');
-                            $stmt->bind_param('i', $order['product_id']);
-                            $stmt->execute();
-                            $product = $stmt->get_result()->fetch_assoc();
-
                             echo '<tr id="' . $order['id'] . '">';
                             echo '<td class="border-2 border-gray-100 p-5">' . $order['id'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $product['id'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $product['name'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $order['cost'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5"><img class="h-80 w-80 aspect-square object-cover" src="' . $product['image'] . '" alt="' . $product['name'] . '"></td>';
-                            echo '<td class="border-2 border-gray-100 p-5"><div class="h-full justify-center align-middle flex flex-col gap-3"><a href="/view.php?id=' . $product['id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Ver</a></div></td>';
+                            echo '<td class="border-2 border-gray-100 p-5">' . $order['product_id'] . '</td>';
+                            echo '<td class="border-2 border-gray-100 p-5">' . $order['product_name'] . '</td>';
+                            echo '<td class="border-2 border-gray-100 p-5">' . $order['product_cost'] . '</td>';
+                            echo '<td class="border-2 border-gray-100 p-5"><img class="h-80 w-80 aspect-square object-cover" src="' . $order['product_image'] . '" alt="' . $order['product_name'] . '"></td>';
+                            echo '<td class="border-2 border-gray-100 p-5"><div class="h-full justify-center align-middle flex flex-col gap-3"><a href="/view.php?id=' . $order['product_id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Ver</a></div></td>';
                             echo '</tr>';
                         }
                         ?>

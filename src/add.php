@@ -24,6 +24,10 @@ if (!isset($_SESSION['user'])) {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
+    if (!$user) {
+        header('Location: /');
+        exit();
+    }
     if ($user['role'] !== 'admin') {
         header('Location: /');
         exit();

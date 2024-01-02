@@ -25,6 +25,10 @@ if (isset($_GET['id'])) {
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
 
+        if (!$user) {
+            header('Location: /');
+            exit();
+        }
         if ($user['role'] !== 'admin') {
             header('Location: /');
             exit();
