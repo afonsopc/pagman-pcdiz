@@ -130,7 +130,7 @@ if (isset($_POST['name'])) {
                             echo '
                                 <td class="p-5 border-2 border-gray-100">
                                     <div class="h-full justify-center align-middle flex flex-col gap-3">
-                                        <a href="/delete_user.php?id=' . $user['id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Apagar</a>
+                                        <a href="/delete_user.php?id=' . $user['id'] . '" onclick="return confirm(\'Are you sure you want to delete this user?\');" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Apagar</a>
                                         <a href="/view_user.php?id=' . $user['id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Ver</a>
                                     </div>
                                 </td>
