@@ -33,16 +33,8 @@ if (
     isset($_POST['email']) &&
     isset($_POST['phone'])
 ) {
-    $db_host = $_ENV['DB_HOST'];
-    $db_port = $_ENV['DB_PORT'];
-    $db_database = $_ENV['DB_DATABASE'];
-    $db_user = $_ENV['DB_USER'];
-    $db_password = $_ENV['DB_PASSWORD'];
-
-    $db = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
 
     $name = $_POST['name'];
-    $money = $_POST['money'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $password = $_POST['password'];
@@ -61,10 +53,21 @@ if (
     }
 
     $stmt = $db->prepare('UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ?');
-    $stmt->bind_param('sssi', $name, $money, $email, $phone, $id);
+    $stmt->bind_param('sssi', $name, $email, $phone, $id);
     $stmt->execute();
 
-    echo "<script>window.location.reload()</script>";
+    if ($password !== '') {
+        session_destroy();
+    }
+    else {
+        $stmt = $db->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $user = $stmt->get_result()->fetch_assoc();
+        $_SESSION['user'] = $user;
+    }
+
+    header('Location: /');
 }
 ?>
 
