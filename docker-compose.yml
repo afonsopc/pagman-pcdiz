@@ -22,7 +22,7 @@ services:
     depends_on:
       - database
     environment:
-      - "DB_HOST=database"
+      - "DB_HOST=database1"
       - "DB_PORT=3001"
       - "DB_DATABASE=user"
       - "DB_USER=user"

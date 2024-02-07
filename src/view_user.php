@@ -50,6 +50,8 @@ if (isset($_GET['id'])) {
     $name = $user['name'];
     $money = $user['money'];
     $role = $user['role'];
+    $email = $user['email'];
+    $phone = $user['phone'];
 } else {
     header("Location: /");
     exit();
@@ -57,6 +59,8 @@ if (isset($_GET['id'])) {
 
 if (
     isset($_POST['name']) &&
+    isset($_POST['email']) &&
+    isset($_POST['phone']) &&
     isset($_POST['money'])
 ) {
     $db_host = $_ENV['DB_HOST'];
@@ -69,6 +73,16 @@ if (
 
     $name = $_POST['name'];
     $money = $_POST['money'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $password = $_POST['password'];
+
+    if ($password !== '') {
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $db->prepare('UPDATE users SET password = ? WHERE id = ?');
+        $stmt->bind_param('si', $password, $id);
+        $stmt->execute();
+    }
 
     if (isset($_POST['is_admin'])) {
         $role = 'admin';
@@ -76,8 +90,8 @@ if (
         $role = 'user';
     }
 
-    $stmt = $db->prepare('UPDATE users SET name = ?, money = ?, role = ? WHERE id = ?');
-    $stmt->bind_param('sssi', $name, $money, $role, $id);
+    $stmt = $db->prepare('UPDATE users SET name = ?, money = ?, role = ?, email = ?, phone = ? WHERE id = ?');
+    $stmt->bind_param('sdsssi', $name, $money, $role, $email, $phone, $id);
     $stmt->execute();
 
     header("Location: /admin.php#$id");
@@ -127,6 +141,12 @@ if (
                     <input class="border-gray-200 p-2 rounded-md border-2" type="text" name="name" id="name" value="<?php echo $name; ?>">
                     <label for="money">Saldo (€)</label>
                     <input class="border-gray-200 p-2 rounded-md border-2" type="number" name="money" id="money" value="<?php echo $money; ?>">
+                    <label for="money">Email</label>
+                    <input class="border-gray-200 p-2 rounded-md border-2" type="email" name="email" id="email" value="<?php echo $email; ?>">
+                    <label for="money">Telefone</label>
+                    <input class="border-gray-200 p-2 rounded-md border-2" type="tel" maxlength="9" name="phone" id="phone" value="<?php echo $phone; ?>">
+                    <label for="money">Password</label>
+                    <input class="border-gray-200 p-2 rounded-md border-2" type="password" minlength="8" name="password" id="password">
                     <label for="is_admin">Admin</label>
                     <input class="border-gray-200 p-2 rounded-md border-2 size-8 cursor-pointer" type="checkbox" name="is_admin" id="is_admin" <?php if ($role === 'admin') echo "checked='checked'"; ?>>
                 </section>

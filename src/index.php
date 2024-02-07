@@ -19,7 +19,7 @@ session_start();
         </a>
         <div class="flex gap-3 justify-center align-middle items-center">
             <?php
-            if (isset($_SESSION['user'])) {
+            if (isset($_SESSION['user']['id'])) {
                 if (isset($_SESSION['user']['name']) && isset($_SESSION['user']['money'])) {
                     echo '<h1 class="text-xl text-nowrap">Bem-vindo, <span class="font-black">' . $_SESSION['user']['name'] . '</span> (' . $_SESSION['user']['money'] . ' €)</h1>';
                 }
@@ -69,9 +69,9 @@ session_start();
                             echo '<tr class="text-center">';
                             echo '<td class="border-2 border-gray-100 p-5">' . $product['id'] . '</td>';
                             echo '<td class="border-2 border-gray-100 p-5">' . $product['name'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $product['cost'] . '</td>';
+                            echo '<td class="border-2 border-gray-100 p-5">' . $product['cost'] . '€</td>';
                             echo '<td class="border-2 border-gray-100 p-5"><img src="' . $product['image'] . '" alt="Imagem do produto" class="h-80 w-80 aspect-square object-cover"></td>';
-                            if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') {
+                            if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin') {
                                 echo '<td class="border-2 border-gray-100 p-5"><div class="h-full justify-center align-middle flex flex-col gap-3"><a href="/edit.php?id=' . $product['id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Editar</a><a href="/delete.php?id=' . $product['id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Apagar</a><a href="/view.php?id=' . $product['id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Ver</a></div></td>';
                             } else {
                                 echo '<td class="border-2 border-gray-100 p-5"><div class="h-full justify-center align-middle flex flex-col gap-3"><a href="/view.php?id=' . $product['id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Ver</a></div></td>';
@@ -84,7 +84,7 @@ session_start();
             </div>
 
             <?php
-            if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') {
+            if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin') {
                 echo '<a href="/add.php" class="text-center hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Adicionar produto</a>';
             }
             ?>
