@@ -7,61 +7,31 @@ $db_database = $_ENV['DB_DATABASE'];
 $db_user = $_ENV['DB_USER'];
 $db_password = $_ENV['DB_PASSWORD'];
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user']['id'])) {
     header('Location: /');
     exit();
-} else {
-    if (!isset($_SESSION['user']['id'])) {
-        header('Location: /');
-        exit();
-    }
+} 
+$id = $_SESSION['user']['id'];
 
-    $db = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
-    $stmt = $db->prepare('SELECT role FROM users WHERE id = ?');
-    $stmt->bind_param('i', $_SESSION['user']['id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+$db = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
+$stmt = $db->prepare('SELECT * FROM users WHERE id = ?');
+$stmt->bind_param('i', $id);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
 
-    if (!$user) {
-        header('Location: /');
-        exit();
-    }
-    if ($user['role'] !== 'admin') {
-        header('Location: /');
-        exit();
-    }
-}
-
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    $db = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
-    $stmt = $db->prepare('SELECT * FROM users WHERE id = ?');
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $user = $stmt->get_result()->fetch_assoc();
-
-    if (!$user) {
-        header("Location: /");
-        exit();
-    }
-
-    $name = $user['name'];
-    $money = $user['money'];
-    $role = $user['role'];
-    $email = $user['email'];
-    $phone = $user['phone'];
-} else {
+if (!$user) {
     header("Location: /");
     exit();
 }
 
+$name = $user['name'];
+$email = $user['email'];
+$phone = $user['phone'];
+
 if (
     isset($_POST['name']) &&
     isset($_POST['email']) &&
-    isset($_POST['phone']) &&
-    isset($_POST['money'])
+    isset($_POST['phone'])
 ) {
     $db_host = $_ENV['DB_HOST'];
     $db_port = $_ENV['DB_PORT'];
@@ -90,11 +60,11 @@ if (
         $role = 'user';
     }
 
-    $stmt = $db->prepare('UPDATE users SET name = ?, money = ?, role = ?, email = ?, phone = ? WHERE id = ?');
-    $stmt->bind_param('sdsssi', $name, $money, $role, $email, $phone, $id);
+    $stmt = $db->prepare('UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ?');
+    $stmt->bind_param('sssi', $name, $money, $email, $phone, $id);
     $stmt->execute();
 
-    header("Location: /admin.php#$id");
+    echo "<script>window.location.reload()</script>";
 }
 ?>
 
@@ -105,7 +75,7 @@ if (
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./tailwind.js"></script>
-    <title>Visualizar Utilizador</title>
+    <title>Pagina do Utilizador</title>
 </head>
 
 <body>
@@ -141,60 +111,17 @@ if (
                 <section class="flex flex-col gap-2 items-center">
                     <label for="name">Nome</label>
                     <input class="border-gray-200 p-2 rounded-md border-2" type="text" name="name" id="name" value="<?php echo $name; ?>">
-                    <label for="money">Saldo (€)</label>
-                    <input class="border-gray-200 p-2 rounded-md border-2" type="number" name="money" id="money" value="<?php echo $money; ?>">
                     <label for="money">Email</label>
                     <input class="border-gray-200 p-2 rounded-md border-2" type="email" name="email" id="email" value="<?php echo $email; ?>">
                     <label for="money">Telefone</label>
                     <input class="border-gray-200 p-2 rounded-md border-2" type="tel" maxlength="9" name="phone" id="phone" value="<?php echo $phone; ?>">
                     <label for="money">Password</label>
                     <input class="border-gray-200 p-2 rounded-md border-2" type="password" minlength="8" name="password" id="password">
-                    <label for="is_admin">Admin</label>
-                    <input class="border-gray-200 p-2 rounded-md border-2 size-8 cursor-pointer" type="checkbox" name="is_admin" id="is_admin" <?php if ($role === 'admin') echo "checked='checked'"; ?>>
                 </section>
                 <section class="pt-3 flex flex-col gap-3">
                     <input class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2 cursor-pointer" type="submit" value="Editar">
                 </section>
             </form>
-        </section>
-
-        <section class="flex gap-5 flex-col text-center">
-            <h1 class="font-black text-5xl">Compras do Utilizador</h1>
-
-            <div class="w-full overflow-auto block">
-                <table class="border-2 border-gray-100">
-                    <thead>
-                        <tr>
-                            <th>ID da Compra</th>
-                            <th>ID do Producto</th>
-                            <th>Nome</th>
-                            <th>Preço</th>
-                            <th>Imagem</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $db = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
-                        $stmt = $db->prepare('SELECT * FROM orders WHERE user_id = ?');
-                        $stmt->bind_param('i', $id);
-                        $stmt->execute();
-                        $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-                        foreach ($orders as $order) {
-                            echo '<tr id="' . $order['id'] . '">';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $order['id'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $order['product_id'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $order['product_name'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5">' . $order['product_cost'] . '</td>';
-                            echo '<td class="border-2 border-gray-100 p-5"><img class="h-80 w-80 aspect-square object-cover" src="' . $order['product_image'] . '" alt="' . $order['product_name'] . '"></td>';
-                            echo '<td class="border-2 border-gray-100 p-5"><div class="p-5 h-full justify-center align-middle flex flex-col gap-3"><a href="/view.php?id=' . $order['product_id'] . '" class="hover:bg-gray-100 px-5 border-gray-100 rounded-lg p-2 border-2">Ver</a></div></td>';
-                            echo '</tr>';
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
         </section>
     </main>
 </body>
